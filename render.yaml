@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: income-api
+    env: python
+    plan: free
+    region: oregon
+    branch: p2-dev-clean
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: gunicorn -k uvicorn.workers.UvicornWorker main:app
+    autoDeploy: true
