@@ -193,3 +193,7 @@ model/
 # Runtime
 server.log
 server.pid
+
+# Runtime
+server.log
+server.pid
