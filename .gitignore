@@ -189,3 +189,7 @@ model/
 # Artifacts (do not track)
 model/
 *.joblib
+
+# Runtime
+server.log
+server.pid
