@@ -180,15 +180,12 @@ fastapi/
 
 # Artifacts (don’t track)
 model/
-screenshot/
 *.joblib
 
 # Artifacts (do not track)
 model/
-screenshot/
 *.joblib
 
 # Artifacts (do not track)
 model/
-screenshot/
 *.joblib

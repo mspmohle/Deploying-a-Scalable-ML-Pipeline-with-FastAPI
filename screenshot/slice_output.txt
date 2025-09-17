@@ -1,0 +1,102 @@
+workclass =               ? | n=1836 | precision=0.925 recall=0.901 fbeta=0.912
+workclass =     Federal-gov | n= 960 | precision=0.945 recall=0.933 fbeta=0.939
+workclass =       Local-gov | n=2093 | precision=0.955 recall=0.927 fbeta=0.941
+workclass =    Never-worked | n=   7 | precision=0.000 recall=0.000 fbeta=0.000
+workclass =         Private | n=22696 | precision=0.953 recall=0.923 fbeta=0.938
+workclass =    Self-emp-inc | n=1116 | precision=0.948 recall=0.960 fbeta=0.954
+workclass = Self-emp-not-inc | n=2541 | precision=0.971 recall=0.927 fbeta=0.948
+workclass =       State-gov | n=1298 | precision=0.940 recall=0.938 fbeta=0.939
+workclass =     Without-pay | n=  14 | precision=0.000 recall=0.000 fbeta=0.000
+education =            10th | n= 933 | precision=1.000 recall=0.823 fbeta=0.903
+education =            11th | n=1175 | precision=1.000 recall=0.883 fbeta=0.938
+education =            12th | n= 433 | precision=0.938 recall=0.909 fbeta=0.923
+education =         1st-4th | n= 168 | precision=1.000 recall=0.833 fbeta=0.909
+education =         5th-6th | n= 333 | precision=1.000 recall=1.000 fbeta=1.000
+education =         7th-8th | n= 646 | precision=1.000 recall=0.875 fbeta=0.933
+education =             9th | n= 514 | precision=1.000 recall=0.778 fbeta=0.875
+education =      Assoc-acdm | n=1067 | precision=0.960 recall=0.913 fbeta=0.936
+education =       Assoc-voc | n=1382 | precision=0.967 recall=0.892 fbeta=0.928
+education =       Bachelors | n=5355 | precision=0.949 recall=0.955 fbeta=0.952
+education =       Doctorate | n= 413 | precision=0.974 recall=0.977 fbeta=0.976
+education =         HS-grad | n=10501 | precision=0.938 recall=0.879 fbeta=0.908
+education =         Masters | n=1723 | precision=0.970 recall=0.972 fbeta=0.971
+education =       Preschool | n=  51 | precision=0.000 recall=0.000 fbeta=0.000
+education =     Prof-school | n= 576 | precision=0.963 recall=0.991 fbeta=0.977
+education =    Some-college | n=7291 | precision=0.945 recall=0.903 fbeta=0.923
+marital-status =        Divorced | n=4443 | precision=0.968 recall=0.853 fbeta=0.907
+marital-status = Married-AF-spouse | n=  23 | precision=1.000 recall=0.700 fbeta=0.824
+marital-status = Married-civ-spouse | n=14976 | precision=0.948 recall=0.935 fbeta=0.942
+marital-status = Married-spouse-absent | n= 418 | precision=1.000 recall=0.882 fbeta=0.938
+marital-status =   Never-married | n=10683 | precision=0.982 recall=0.904 fbeta=0.942
+marital-status =       Separated | n=1025 | precision=1.000 recall=0.848 fbeta=0.918
+marital-status =         Widowed | n= 993 | precision=1.000 recall=0.918 fbeta=0.957
+occupation =               ? | n=1843 | precision=0.925 recall=0.901 fbeta=0.912
+occupation =    Adm-clerical | n=3770 | precision=0.935 recall=0.876 fbeta=0.904
+occupation =    Armed-Forces | n=   9 | precision=1.000 recall=1.000 fbeta=1.000
+occupation =    Craft-repair | n=4099 | precision=0.936 recall=0.897 fbeta=0.916
+occupation = Exec-managerial | n=4066 | precision=0.963 recall=0.951 fbeta=0.957
+occupation = Farming-fishing | n= 994 | precision=0.972 recall=0.896 fbeta=0.932
+occupation = Handlers-cleaners | n=1370 | precision=0.952 recall=0.919 fbeta=0.935
+occupation = Machine-op-inspct | n=2002 | precision=0.969 recall=0.864 fbeta=0.913
+occupation =   Other-service | n=3295 | precision=0.983 recall=0.854 fbeta=0.914
+occupation = Priv-house-serv | n= 149 | precision=1.000 recall=1.000 fbeta=1.000
+occupation =  Prof-specialty | n=4140 | precision=0.956 recall=0.964 fbeta=0.960
+occupation = Protective-serv | n= 649 | precision=0.960 recall=0.910 fbeta=0.934
+occupation =           Sales | n=3650 | precision=0.948 recall=0.924 fbeta=0.936
+occupation =    Tech-support | n= 928 | precision=0.949 recall=0.919 fbeta=0.934
+occupation = Transport-moving | n=1597 | precision=0.943 recall=0.878 fbeta=0.909
+relationship =         Husband | n=13193 | precision=0.948 recall=0.936 fbeta=0.942
+relationship =   Not-in-family | n=8305 | precision=0.976 recall=0.884 fbeta=0.928
+relationship =  Other-relative | n= 981 | precision=1.000 recall=0.838 fbeta=0.912
+relationship =       Own-child | n=5068 | precision=0.966 recall=0.851 fbeta=0.905
+relationship =       Unmarried | n=3446 | precision=0.995 recall=0.872 fbeta=0.929
+relationship =            Wife | n=1568 | precision=0.951 recall=0.934 fbeta=0.942
+race = Amer-Indian-Eskimo | n= 311 | precision=0.939 recall=0.861 fbeta=0.899
+race = Asian-Pac-Islander | n=1039 | precision=0.941 recall=0.931 fbeta=0.936
+race =           Black | n=3124 | precision=0.956 recall=0.902 fbeta=0.928
+race =           Other | n= 271 | precision=1.000 recall=0.960 fbeta=0.980
+race =           White | n=27816 | precision=0.953 recall=0.929 fbeta=0.941
+sex =          Female | n=10771 | precision=0.961 recall=0.915 fbeta=0.937
+sex =            Male | n=21790 | precision=0.951 recall=0.929 fbeta=0.940
+native-country =               ? | n= 583 | precision=0.933 recall=0.959 fbeta=0.946
+native-country =        Cambodia | n=  19 | precision=0.875 recall=1.000 fbeta=0.933
+native-country =          Canada | n= 121 | precision=0.946 recall=0.897 fbeta=0.921
+native-country =           China | n=  75 | precision=0.950 recall=0.950 fbeta=0.950
+native-country =        Columbia | n=  59 | precision=0.667 recall=1.000 fbeta=0.800
+native-country =            Cuba | n=  95 | precision=1.000 recall=0.960 fbeta=0.980
+native-country = Dominican-Republic | n=  70 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =         Ecuador | n=  28 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =     El-Salvador | n= 106 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =         England | n=  90 | precision=0.964 recall=0.900 fbeta=0.931
+native-country =          France | n=  29 | precision=0.923 recall=1.000 fbeta=0.960
+native-country =         Germany | n= 137 | precision=0.953 recall=0.932 fbeta=0.943
+native-country =          Greece | n=  29 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =       Guatemala | n=  64 | precision=1.000 recall=0.667 fbeta=0.800
+native-country =           Haiti | n=  44 | precision=1.000 recall=1.000 fbeta=1.000
+native-country = Holand-Netherlands | n=   1 | precision=0.000 recall=0.000 fbeta=0.000
+native-country =        Honduras | n=  13 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =            Hong | n=  20 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =         Hungary | n=  13 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =           India | n= 100 | precision=0.930 recall=1.000 fbeta=0.964
+native-country =            Iran | n=  43 | precision=0.842 recall=0.889 fbeta=0.865
+native-country =         Ireland | n=  24 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =           Italy | n=  73 | precision=1.000 recall=0.880 fbeta=0.936
+native-country =         Jamaica | n=  81 | precision=0.909 recall=1.000 fbeta=0.952
+native-country =           Japan | n=  62 | precision=0.957 recall=0.917 fbeta=0.936
+native-country =            Laos | n=  18 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =          Mexico | n= 643 | precision=0.969 recall=0.939 fbeta=0.954
+native-country =       Nicaragua | n=  34 | precision=0.500 recall=0.500 fbeta=0.500
+native-country = Outlying-US(Guam-USVI-etc) | n=  14 | precision=0.000 recall=0.000 fbeta=0.000
+native-country =            Peru | n=  31 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =     Philippines | n= 198 | precision=0.934 recall=0.934 fbeta=0.934
+native-country =          Poland | n=  60 | precision=0.857 recall=1.000 fbeta=0.923
+native-country =        Portugal | n=  37 | precision=1.000 recall=0.750 fbeta=0.857
+native-country =     Puerto-Rico | n= 114 | precision=0.846 recall=0.917 fbeta=0.880
+native-country =        Scotland | n=  12 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =           South | n=  80 | precision=1.000 recall=0.688 fbeta=0.815
+native-country =          Taiwan | n=  51 | precision=1.000 recall=0.950 fbeta=0.974
+native-country =        Thailand | n=  18 | precision=1.000 recall=1.000 fbeta=1.000
+native-country = Trinadad&Tobago | n=  19 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =   United-States | n=29170 | precision=0.953 recall=0.926 fbeta=0.940
+native-country =         Vietnam | n=  67 | precision=1.000 recall=1.000 fbeta=1.000
+native-country =      Yugoslavia | n=  16 | precision=1.000 recall=0.833 fbeta=0.909
