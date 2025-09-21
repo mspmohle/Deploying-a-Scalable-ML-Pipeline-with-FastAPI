@@ -1,74 +1,147 @@
-import os
+#!/usr/bin/env python3
+from __future__ import annotations
 
+from pathlib import Path
+from typing import Optional
+
+import numpy as np
 import pandas as pd
-from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field, ConfigDict
+from joblib import load as joblib_load
 
-from ml.data import apply_label, process_data
-from ml.model import inference, load_model
+app = FastAPI(title="Income classifier API", version="1.0.7")
 
-# DO NOT MODIFY
-class Data(BaseModel):
-    age: int = Field(..., example=37)
-    workclass: str = Field(..., example="Private")
-    fnlgt: int = Field(..., example=178356)
-    education: str = Field(..., example="HS-grad")
-    education_num: int = Field(..., example=10, alias="education-num")
-    marital_status: str = Field(
-        ..., example="Married-civ-spouse", alias="marital-status"
-    )
-    occupation: str = Field(..., example="Prof-specialty")
-    relationship: str = Field(..., example="Husband")
-    race: str = Field(..., example="White")
-    sex: str = Field(..., example="Male")
-    capital_gain: int = Field(..., example=0, alias="capital-gain")
-    capital_loss: int = Field(..., example=0, alias="capital-loss")
-    hours_per_week: int = Field(..., example=40, alias="hours-per-week")
-    native_country: str = Field(..., example="United-States", alias="native-country")
+# Columns used during training
+NUMERIC = ["age", "fnlgt", "education-num", "capital-gain", "capital-loss", "hours-per-week"]
+CATEGORICALS = [
+    "workclass",
+    "education",
+    "marital-status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native-country",
+]
 
-path = None # TODO: enter the path for the saved encoder 
-encoder = load_model(path)
+class IncomeRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    age: int
+    workclass: str
+    fnlgt: int
+    education: str
+    education_num: int = Field(alias="education-num")
+    marital_status: str = Field(alias="marital-status")
+    occupation: str
+    relationship: str
+    race: str
+    sex: str
+    capital_gain: int = Field(alias="capital-gain")
+    capital_loss: int = Field(alias="capital-loss")
+    hours_per_week: int = Field(alias="hours-per-week")
+    native_country: str = Field(alias="native-country")
 
-path = None # TODO: enter the path for the saved model 
-model = load_model(path)
+_MODEL = None
+_ENCODER = None
+_LB = None
 
-# TODO: create a RESTful API using FastAPI
-app = None # your code here
+def _p(name: str) -> Path:
+    return Path("model") / name
 
-# TODO: create a GET on the root giving a welcome message
+def _load_file(path: Path, what: str):
+    if not path.exists():
+        raise HTTPException(status_code=503, detail=f"Missing artifact: {path}")
+    try:
+        obj = joblib_load(path)
+        if obj is None:
+            raise RuntimeError(f"{what} loaded as None")
+        return obj
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load {what} from {path.name}: {e}")
+
+def _load_artifacts():
+    global _MODEL, _ENCODER, _LB
+    if _MODEL is None:
+        _MODEL = _load_file(_p("model.joblib"), "model")
+    if _ENCODER is None:
+        _ENCODER = _load_file(_p("encoder.joblib"), "encoder")
+    if _LB is None:
+        _LB = _load_file(_p("lb.joblib"), "label binarizer")
+
 @app.get("/")
-async def get_root():
-    """ Say hello!"""
-    # your code here
-    pass
+def root():
+    return {"message": "Income classifier API"}
 
+@app.get("/health")
+def health():
+    ok = _p("model.joblib").exists() and _p("encoder.joblib").exists() and _p("lb.joblib").exists()
+    return {"status": "ok" if ok else "missing_artifacts"}
 
-# TODO: create a POST on a different path that does model inference
-@app.post("/data/")
-async def post_inference(data: Data):
-    # DO NOT MODIFY: turn the Pydantic model into a dict.
-    data_dict = data.dict()
-    # DO NOT MODIFY: clean up the dict to turn it into a Pandas DataFrame.
-    # The data has names with hyphens and Python does not allow those as variable names.
-    # Here it uses the functionality of FastAPI/Pydantic/etc to deal with this.
-    data = {k.replace("_", "-"): [v] for k, v in data_dict.items()}
-    data = pd.DataFrame.from_dict(data)
+@app.post("/predict")
+def predict(req: IncomeRequest):
+    _load_artifacts()
 
-    cat_features = [
-        "workclass",
-        "education",
-        "marital-status",
-        "occupation",
-        "relationship",
-        "race",
-        "sex",
-        "native-country",
-    ]
-    data_processed, _, _, _ = process_data(
-        # your code here
-        # use data as data input
-        # use training = False
-        # do not need to pass lb as input
-    )
-    _inference = None # your code here to predict the result using data_processed
-    return {"result": apply_label(_inference)}
+    # Build a single-row DataFrame with original names
+    row = {
+        "age": req.age,
+        "workclass": req.workclass,
+        "fnlgt": req.fnlgt,
+        "education": req.education,
+        "education-num": req.education_num,
+        "marital-status": req.marital_status,
+        "occupation": req.occupation,
+        "relationship": req.relationship,
+        "race": req.race,
+        "sex": req.sex,
+        "capital-gain": req.capital_gain,
+        "capital-loss": req.capital_loss,
+        "hours-per-week": req.hours_per_week,
+        "native-country": req.native_country,
+    }
+    X_df = pd.DataFrame([row])
+
+    # Numeric cast + exact order
+    try:
+        for c in NUMERIC:
+            X_df[c] = pd.to_numeric(X_df[c], errors="coerce").fillna(0).astype(int)
+        X_cont = X_df[NUMERIC]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"numeric cast/order failed: {e}")
+
+    # One-hot encode categoricals with saved encoder (sparse -> dense)
+    try:
+        cats = [c for c in CATEGORICALS if c in X_df.columns]
+        X_cat = X_df[cats] if cats else pd.DataFrame(index=X_df.index)
+        X_cat_enc = _ENCODER.transform(X_cat) if len(cats) else np.empty((len(X_df), 0))
+        if hasattr(X_cat_enc, "toarray"):
+            X_cat_enc = X_cat_enc.toarray()
+        X_proc = np.concatenate([X_cont.to_numpy(), X_cat_enc], axis=1)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"categorical transform failed: {e}")
+
+    # Predict (same as your successful smoke test)
+    try:
+        preds = _MODEL.predict(X_proc)
+        pred_int = int(preds[0])
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"inference failed: {e}")
+
+    # Map to string label
+    try:
+        if hasattr(_LB, "classes_"):
+            classes = list(_LB.classes_)
+            pred_label = str(classes[pred_int]) if 0 <= pred_int < len(classes) else (">50K" if pred_int == 1 else "<=50K")
+        else:
+            pred_label = ">50K" if pred_int == 1 else "<=50K"
+    except Exception:
+        pred_label = ">50K" if pred_int == 1 else "<=50K"
+
+    prob_gt_50k: Optional[float] = None
+    if hasattr(_MODEL, "predict_proba"):
+        try:
+            prob_gt_50k = float(_MODEL.predict_proba(X_proc)[:, 1][0])
+        except Exception:
+            prob_gt_50k = None
+
+    return {"prediction": pred_label, "prob_gt_50k": prob_gt_50k}

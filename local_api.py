@@ -1,38 +1,52 @@
-import json
+import os, json, traceback, requests
 
-import requests
+BASE_URL = os.environ.get("API_URL", "http://127.0.0.1:8000")
 
-# TODO: send a GET using the URL http://127.0.0.1:8000
-r = None # Your code here
+def main():
+    print(f"Using BASE_URL={BASE_URL}")
 
-# TODO: print the status code
-# print()
-# TODO: print the welcome message
-# print()
+    # ---- GET /
+    try:
+        r = requests.get(f"{BASE_URL}/", timeout=10)
+        print("GET / ->", r.status_code)
+        try:
+            msg = r.json().get("message", r.text)
+        except Exception:
+            msg = r.text
+        print("Message:", msg)
+    except Exception as e:
+        print("GET error:", e)
+        traceback.print_exc()
 
+    # ---- POST /predict
+    payload = {
+        "age": 39,
+        "workclass": "State-gov",
+        "fnlgt": 77516,
+        "education": "Bachelors",
+        "education-num": 13,
+        "marital-status": "Never-married",
+        "occupation": "Adm-clerical",
+        "relationship": "Not-in-family",
+        "race": "White",
+        "sex": "Male",
+        "capital-gain": 2174,
+        "capital-loss": 0,
+        "hours-per-week": 40,
+        "native-country": "United-States"
+    }
+    try:
+        r = requests.post(f"{BASE_URL}/predict", json=payload, timeout=20)
+        print("POST /predict ->", r.status_code)
+        try:
+            body = r.json()
+            print("Prediction:", body.get("prediction"))
+            print("prob_gt_50k:", body.get("prob_gt_50k"))
+        except json.JSONDecodeError:
+            print("Raw body:", r.text)
+    except Exception as e:
+        print("POST error:", e)
+        traceback.print_exc()
 
-
-data = {
-    "age": 37,
-    "workclass": "Private",
-    "fnlgt": 178356,
-    "education": "HS-grad",
-    "education-num": 10,
-    "marital-status": "Married-civ-spouse",
-    "occupation": "Prof-specialty",
-    "relationship": "Husband",
-    "race": "White",
-    "sex": "Male",
-    "capital-gain": 0,
-    "capital-loss": 0,
-    "hours-per-week": 40,
-    "native-country": "United-States",
-}
-
-# TODO: send a POST using the data above
-r = None # Your code here
-
-# TODO: print the status code
-# print()
-# TODO: print the result
-# print()
+if __name__ == "__main__":
+    main()
