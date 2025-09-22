@@ -1,87 +1,117 @@
-import os
+# train_model.py
+from __future__ import annotations
+
+from pathlib import Path
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
-
-from ml.data import process_data
-from ml.model import (
+from app.model import (
+    LABEL,
+    Artifacts,
+    EXPLICIT_CATEGORICAL_FEATURES,
     compute_model_metrics,
+    infer_categorical_features,
     inference,
-    load_model,
-    performance_on_categorical_slice,
-    save_model,
+    process_data,
+    save_artifacts,
     train_model,
 )
-# TODO: load the cencus.csv data
-project_path = "Your path here"
-data_path = os.path.join(project_path, "data", "census.csv")
-print(data_path)
-data = None # your code here
 
-# TODO: split the provided data to have a train dataset and a test dataset
-# Optional enhancement, use K-fold cross validation instead of a train-test split.
-train, test = None, None# Your code here
+DATA_PATH = Path("data/census.csv")     # Update if your CSV is elsewhere
+SLICE_REPORT = Path("slice_output.txt")
+MIN_SLICE = 10                          # skip tiny groups in slice report
 
-# DO NOT MODIFY
-cat_features = [
-    "workclass",
-    "education",
-    "marital-status",
-    "occupation",
-    "relationship",
-    "race",
-    "sex",
-    "native-country",
-]
 
-# TODO: use the process_data function provided to process the data.
-X_train, y_train, encoder, lb = process_data(
-    # your code here
-    # use the train dataset 
-    # use training=True
-    # do not need to pass encoder and lb as input
+def evaluate_slices(
+    df: pd.DataFrame,
+    categorical_features: list[str],
+    model,
+    encoder,
+    label: str,
+) -> str:
+    lines: list[str] = []
+    for feat in categorical_features:
+        # Robust against missing or all-NaN columns
+        if feat not in df.columns:
+            continue
+        values = sorted({str(v) for v in df[feat].dropna().astype(str).unique()})
+        if not values:
+            continue
+
+        lines.append(f"=== Feature: {feat} ===")
+        for val in values:
+            sub = df[df[feat].astype(str) == val]
+            if len(sub) < MIN_SLICE:
+                continue
+            X_proc, y, _ = process_data(
+                sub,
+                categorical_features=categorical_features,
+                label=label,
+                training=False,
+                encoder=encoder,
+            )
+            preds = inference(model, X_proc)
+            p, r, f1 = compute_model_metrics(y, preds)
+            lines.append(f"{feat}={val} | n={len(y)} | precision={p:.4f} recall={r:.4f} f1={f1:.4f}")
+        lines.append("")  # spacer
+    return "\n".join(lines).strip() + "\n"
+
+
+def main() -> None:
+    if not DATA_PATH.exists():
+        raise FileNotFoundError(f"Dataset not found at: {DATA_PATH.resolve()}")
+
+    df = pd.read_csv(DATA_PATH)
+
+    # Choose categorical features
+    if EXPLICIT_CATEGORICAL_FEATURES is not None:
+        categorical_features = [c for c in EXPLICIT_CATEGORICAL_FEATURES if c in df.columns]
+    else:
+        categorical_features = infer_categorical_features(df)
+        if LABEL in categorical_features:
+            categorical_features.remove(LABEL)
+
+    # Train/test split (stratified if label is binary)
+    if LABEL not in df.columns:
+        raise ValueError(f"LABEL '{LABEL}' not found in dataset columns: {list(df.columns)[:15]} ...")
+
+    # Simple manual split to avoid introducing extra dependencies
+    train_df = df.sample(frac=0.8, random_state=42)
+    test_df = df.drop(train_df.index)
+
+    X_train, y_train, enc = process_data(
+        train_df,
+        categorical_features=categorical_features,
+        label=LABEL,
+        training=True,
+        encoder=None,
     )
+    model = train_model(X_train, y_train)
 
-X_test, y_test, _, _ = process_data(
-    test,
-    categorical_features=cat_features,
-    label="salary",
-    training=False,
-    encoder=encoder,
-    lb=lb,
-)
+    # Save artifacts
+    save_artifacts(model, enc, art=Artifacts())
 
-# TODO: use the train_model function to train the model on the training dataset
-model = None # your code here
+    # Quick overall metrics on test set (printed to console)
+    X_test, y_test, _ = process_data(
+        test_df,
+        categorical_features=categorical_features,
+        label=LABEL,
+        training=False,
+        encoder=enc,
+    )
+    preds = inference(model, X_test)
+    p, r, f1 = compute_model_metrics(y_test, preds)
+    print(f"[Test] n={len(y_test)}  precision={p:.4f}  recall={r:.4f}  f1={f1:.4f}")
 
-# save the model and the encoder
-model_path = os.path.join(project_path, "model", "model.pkl")
-save_model(model, model_path)
-encoder_path = os.path.join(project_path, "model", "encoder.pkl")
-save_model(encoder, encoder_path)
+    # Slice report
+    report = evaluate_slices(test_df, categorical_features, model, enc, LABEL)
+    SLICE_REPORT.write_text(report, encoding="utf-8")
+    print(f"Wrote slice report -> {SLICE_REPORT.resolve()}")
 
-# load the model
-model = load_model(
-    model_path
-) 
+    # Assert artifacts exist for sanity
+    assert Artifacts().model_path.exists(), "model.pkl not found after training"
+    assert Artifacts().encoder_path.exists(), "encoder.pkl not found after training"
 
-# TODO: use the inference function to run the model inferences on the test dataset.
-preds = None # your code here
 
-# Calculate and print the metrics
-p, r, fb = compute_model_metrics(y_test, preds)
-print(f"Precision: {p:.4f} | Recall: {r:.4f} | F1: {fb:.4f}")
-
-# TODO: compute the performance on model slices using the performance_on_categorical_slice function
-# iterate through the categorical features
-for col in cat_features:
-    # iterate through the unique values in one categorical feature
-    for slicevalue in sorted(test[col].unique()):
-        count = test[test[col] == slicevalue].shape[0]
-        p, r, fb = performance_on_categorical_slice(
-            # your code here
-            # use test, col and slicevalue as part of the input
-        )
-        with open("slice_output.txt", "a") as f:
-            print(f"{col}: {slicevalue}, Count: {count:,}", file=f)
-            print(f"Precision: {p:.4f} | Recall: {r:.4f} | F1: {fb:.4f}", file=f)
+if __name__ == "__main__":
+    Path("model").mkdir(parents=True, exist_ok=True)
+    main()
