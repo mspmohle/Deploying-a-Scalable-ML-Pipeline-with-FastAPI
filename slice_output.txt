@@ -1,0 +1,94 @@
+=== Feature: workclass ===
+workclass=? | n=377 | precision=0.4615 recall=0.2500 f1=0.3243
+workclass=Federal-gov | n=188 | precision=0.8167 recall=0.6622 f1=0.7313
+workclass=Local-gov | n=415 | precision=0.7570 recall=0.6532 f1=0.7013
+workclass=Private | n=4492 | precision=0.7368 recall=0.6185 f1=0.6725
+workclass=Self-emp-inc | n=234 | precision=0.8162 recall=0.8538 f1=0.8346
+workclass=Self-emp-not-inc | n=538 | precision=0.7876 recall=0.5973 f1=0.6794
+workclass=State-gov | n=263 | precision=0.7581 recall=0.6620 f1=0.7068
+
+=== Feature: education ===
+education=10th | n=189 | precision=1.0000 recall=0.0769 f1=0.1429
+education=11th | n=233 | precision=1.0000 recall=0.3571 f1=0.5263
+education=12th | n=87 | precision=0.0000 recall=0.0000 f1=0.0000
+education=1st-4th | n=31 | precision=1.0000 recall=0.5000 f1=0.6667
+education=5th-6th | n=62 | precision=0.0000 recall=0.0000 f1=0.0000
+education=7th-8th | n=123 | precision=0.0000 recall=0.0000 f1=0.0000
+education=9th | n=105 | precision=1.0000 recall=0.1250 f1=0.2222
+education=Assoc-acdm | n=240 | precision=0.5962 recall=0.5254 f1=0.5586
+education=Assoc-voc | n=283 | precision=0.6508 recall=0.5467 f1=0.5942
+education=Bachelors | n=1090 | precision=0.7615 recall=0.7597 f1=0.7606
+education=Doctorate | n=93 | precision=0.8873 recall=0.8514 f1=0.8690
+education=HS-grad | n=2091 | precision=0.6808 recall=0.4203 f1=0.5197
+education=Masters | n=355 | precision=0.8718 recall=0.8500 f1=0.8608
+education=Prof-school | n=111 | precision=0.8588 recall=0.8902 f1=0.8743
+education=Some-college | n=1413 | precision=0.6733 recall=0.5551 f1=0.6085
+
+=== Feature: marital-status ===
+marital-status=Divorced | n=902 | precision=0.8000 recall=0.3636 f1=0.5000
+marital-status=Married-civ-spouse | n=2975 | precision=0.7441 recall=0.6814 f1=0.7114
+marital-status=Married-spouse-absent | n=76 | precision=1.0000 recall=0.3333 f1=0.5000
+marital-status=Never-married | n=2162 | precision=0.8679 recall=0.4742 f1=0.6133
+marital-status=Separated | n=191 | precision=1.0000 recall=0.2308 f1=0.3750
+marital-status=Widowed | n=200 | precision=1.0000 recall=0.2778 f1=0.4348
+
+=== Feature: occupation ===
+occupation=? | n=380 | precision=0.4615 recall=0.2500 f1=0.3243
+occupation=Adm-clerical | n=730 | precision=0.6795 recall=0.5761 f1=0.6235
+occupation=Craft-repair | n=816 | precision=0.6029 recall=0.4339 f1=0.5046
+occupation=Exec-managerial | n=823 | precision=0.7778 recall=0.8111 f1=0.7941
+occupation=Farming-fishing | n=201 | precision=0.7333 recall=0.4231 f1=0.5366
+occupation=Handlers-cleaners | n=241 | precision=1.0000 recall=0.4000 f1=0.5714
+occupation=Machine-op-inspct | n=397 | precision=0.6538 recall=0.3208 f1=0.4304
+occupation=Other-service | n=696 | precision=0.7500 recall=0.2143 f1=0.3333
+occupation=Priv-house-serv | n=29 | precision=0.0000 recall=0.0000 f1=0.0000
+occupation=Prof-specialty | n=823 | precision=0.7904 recall=0.7971 f1=0.7937
+occupation=Protective-serv | n=106 | precision=0.8065 recall=0.5682 f1=0.6667
+occupation=Sales | n=767 | precision=0.7758 recall=0.5926 f1=0.6719
+occupation=Tech-support | n=191 | precision=0.8444 recall=0.5672 f1=0.6786
+occupation=Transport-moving | n=310 | precision=0.7027 recall=0.3881 f1=0.5000
+
+=== Feature: relationship ===
+relationship=Husband | n=2626 | precision=0.7408 recall=0.6844 f1=0.7115
+relationship=Not-in-family | n=1666 | precision=0.8391 recall=0.4269 f1=0.5659
+relationship=Other-relative | n=212 | precision=1.0000 recall=0.1000 f1=0.1818
+relationship=Own-child | n=998 | precision=1.0000 recall=0.4444 f1=0.6154
+relationship=Unmarried | n=707 | precision=0.9000 recall=0.3462 f1=0.5000
+relationship=Wife | n=303 | precision=0.7642 recall=0.6528 f1=0.7041
+
+=== Feature: race ===
+race=Amer-Indian-Eskimo | n=53 | precision=0.3333 recall=0.1667 f1=0.2222
+race=Asian-Pac-Islander | n=224 | precision=0.7234 recall=0.6800 f1=0.7010
+race=Black | n=670 | precision=0.8214 recall=0.5750 f1=0.6765
+race=Other | n=47 | precision=0.5000 recall=0.5000 f1=0.5000
+race=White | n=5518 | precision=0.7527 recall=0.6415 f1=0.6926
+
+=== Feature: sex ===
+sex=Female | n=2196 | precision=0.7882 recall=0.5382 f1=0.6396
+sex=Male | n=4316 | precision=0.7476 recall=0.6558 f1=0.6987
+
+=== Feature: native-country ===
+native-country=? | n=121 | precision=0.7917 recall=0.7037 f1=0.7451
+native-country=Canada | n=26 | precision=0.8571 recall=0.8571 f1=0.8571
+native-country=China | n=17 | precision=0.6667 recall=1.0000 f1=0.8000
+native-country=Columbia | n=17 | precision=0.0000 recall=0.0000 f1=0.0000
+native-country=Cuba | n=12 | precision=0.5000 recall=0.3333 f1=0.4000
+native-country=Dominican-Republic | n=14 | precision=0.5000 recall=0.5000 f1=0.5000
+native-country=El-Salvador | n=20 | precision=1.0000 recall=0.6667 f1=0.8000
+native-country=England | n=19 | precision=1.0000 recall=0.4000 f1=0.5714
+native-country=Germany | n=30 | precision=1.0000 recall=0.7500 f1=0.8571
+native-country=Greece | n=10 | precision=0.8000 recall=1.0000 f1=0.8889
+native-country=Guatemala | n=15 | precision=0.0000 recall=0.0000 f1=0.0000
+native-country=Haiti | n=10 | precision=1.0000 recall=1.0000 f1=1.0000
+native-country=India | n=20 | precision=0.7500 recall=0.7500 f1=0.7500
+native-country=Iran | n=11 | precision=0.7500 recall=1.0000 f1=0.8571
+native-country=Italy | n=14 | precision=0.5000 recall=0.2500 f1=0.3333
+native-country=Jamaica | n=14 | precision=0.6667 recall=1.0000 f1=0.8000
+native-country=Japan | n=13 | precision=1.0000 recall=0.8000 f1=0.8889
+native-country=Mexico | n=125 | precision=0.8333 recall=0.5556 f1=0.6667
+native-country=Philippines | n=47 | precision=0.9000 recall=0.6923 f1=0.7826
+native-country=Poland | n=11 | precision=0.0000 recall=0.0000 f1=0.0000
+native-country=Puerto-Rico | n=27 | precision=0.5000 recall=1.0000 f1=0.6667
+native-country=South | n=20 | precision=0.2500 recall=0.3333 f1=0.2857
+native-country=United-States | n=5806 | precision=0.7521 recall=0.6334 f1=0.6876
+native-country=Vietnam | n=15 | precision=0.2500 recall=1.0000 f1=0.4000
