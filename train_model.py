@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import List
 
 import pandas as pd
 from app.model import (
@@ -16,21 +17,23 @@ from app.model import (
     train_model,
 )
 
-DATA_PATH = Path("data/census.csv")     # Update if your CSV is elsewhere
+# ======== CONFIG ========
+DATA_PATH = Path("data/census.csv")     # <- update if your CSV lives elsewhere
 SLICE_REPORT = Path("slice_output.txt")
-MIN_SLICE = 10                          # skip tiny groups in slice report
+MIN_SLICE = 10                          # skip tiny groups in slice metrics
+# ========================
 
 
 def evaluate_slices(
     df: pd.DataFrame,
-    categorical_features: list[str],
+    categorical_features: List[str],
     model,
     encoder,
     label: str,
 ) -> str:
+    """Return a text report with precision/recall/F1 for each value of each categorical feature."""
     lines: list[str] = []
     for feat in categorical_features:
-        # Robust against missing or all-NaN columns
         if feat not in df.columns:
             continue
         values = sorted({str(v) for v in df[feat].dropna().astype(str).unique()})
@@ -52,17 +55,17 @@ def evaluate_slices(
             preds = inference(model, X_proc)
             p, r, f1 = compute_model_metrics(y, preds)
             lines.append(f"{feat}={val} | n={len(y)} | precision={p:.4f} recall={r:.4f} f1={f1:.4f}")
-        lines.append("")  # spacer
+        lines.append("")  # spacer between features
     return "\n".join(lines).strip() + "\n"
 
 
 def main() -> None:
+    # --- Load data
     if not DATA_PATH.exists():
         raise FileNotFoundError(f"Dataset not found at: {DATA_PATH.resolve()}")
-
     df = pd.read_csv(DATA_PATH)
 
-    # Choose categorical features
+    # --- Select categorical features
     if EXPLICIT_CATEGORICAL_FEATURES is not None:
         categorical_features = [c for c in EXPLICIT_CATEGORICAL_FEATURES if c in df.columns]
     else:
@@ -70,14 +73,18 @@ def main() -> None:
         if LABEL in categorical_features:
             categorical_features.remove(LABEL)
 
-    # Train/test split (stratified if label is binary)
+    # --- Basic checks
     if LABEL not in df.columns:
-        raise ValueError(f"LABEL '{LABEL}' not found in dataset columns: {list(df.columns)[:15]} ...")
+        raise ValueError(
+            f"LABEL '{LABEL}' not in dataset columns. "
+            f"Found columns (first 20): {list(df.columns)[:20]}"
+        )
 
-    # Simple manual split to avoid introducing extra dependencies
+    # --- Train/test split
     train_df = df.sample(frac=0.8, random_state=42)
     test_df = df.drop(train_df.index)
 
+    # --- Process/train
     X_train, y_train, enc = process_data(
         train_df,
         categorical_features=categorical_features,
@@ -87,10 +94,10 @@ def main() -> None:
     )
     model = train_model(X_train, y_train)
 
-    # Save artifacts
+    # --- Save artifacts
     save_artifacts(model, enc, art=Artifacts())
 
-    # Quick overall metrics on test set (printed to console)
+    # --- Evaluate on test set
     X_test, y_test, _ = process_data(
         test_df,
         categorical_features=categorical_features,
@@ -102,14 +109,15 @@ def main() -> None:
     p, r, f1 = compute_model_metrics(y_test, preds)
     print(f"[Test] n={len(y_test)}  precision={p:.4f}  recall={r:.4f}  f1={f1:.4f}")
 
-    # Slice report
+    # --- Slice metrics report
     report = evaluate_slices(test_df, categorical_features, model, enc, LABEL)
     SLICE_REPORT.write_text(report, encoding="utf-8")
     print(f"Wrote slice report -> {SLICE_REPORT.resolve()}")
 
-    # Assert artifacts exist for sanity
-    assert Artifacts().model_path.exists(), "model.pkl not found after training"
-    assert Artifacts().encoder_path.exists(), "encoder.pkl not found after training"
+    # --- Sanity: artifacts exist
+    art = Artifacts()
+    assert art.model_path.exists(), "model.pkl not found after training"
+    assert art.encoder_path.exists(), "encoder.pkl not found after training"
 
 
 if __name__ == "__main__":
