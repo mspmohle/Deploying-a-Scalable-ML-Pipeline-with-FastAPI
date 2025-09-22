@@ -1,6 +1,6 @@
-pandas
-scikit-learn
-joblib
-fastapi
-uvicorn
-pytest
+fastapi==0.117.1
+joblib @ file:///home/conda/feedstock_root/build_artifacts/joblib_1714665484399/work
+pandas @ file:///home/conda/feedstock_root/build_artifacts/pandas_1688740591555/work
+pytest==8.3.5
+scikit-learn @ file:///home/conda/feedstock_root/build_artifacts/scikit-learn_1701932003802/work
+uvicorn==0.33.0
