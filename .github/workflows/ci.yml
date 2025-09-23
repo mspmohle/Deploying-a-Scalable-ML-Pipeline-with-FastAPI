@@ -1,4 +1,4 @@
-name: CI (always green)
+name: Build name: CI (always green) Test
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  build_test:
+    name: Build & Test (Python 3.10)
     runs-on: ubuntu-latest
     env:
       PYTHONPATH: ${{ github.workspace }}
