@@ -65,7 +65,7 @@ def process_data(
     X_cat = X_all[categorical_features] if categorical_features else pd.DataFrame(index=X_all.index)
 
     if training:
-        encoder = OneHotEncoder(handle_unknown="ignore", sparse=False)
+        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
         X_cat_enc = encoder.fit_transform(X_cat) if not X_cat.empty else np.empty((len(X_all), 0))
     else:
         if encoder is None:
