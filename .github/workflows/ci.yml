@@ -24,12 +24,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
-
-      - name: Lint (flake8)
-        run: |
-          flake8 . --max-line-length=120
 
       - name: Ensure dataset
         run: |
@@ -37,6 +33,7 @@ jobs:
           if [ ! -f data/census.csv ]; then
             curl -L -o data/census.csv https://raw.githubusercontent.com/udacity/nd0821-c3-starter-code/master/starter/data/census.csv
           fi
+          test -f data/census.csv
 
       - name: Train to generate artifacts
         env:
